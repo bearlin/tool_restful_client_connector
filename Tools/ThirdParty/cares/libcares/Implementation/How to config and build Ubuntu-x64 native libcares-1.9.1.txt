@@ -1,0 +1,61 @@
+[How to config and build Ubuntu-x64 native libcares-1.9.1]
+
+1. download c-ares-1.9.1.tar.gz from http://c-ares.haxx.se/download/.
+2. $ tar -zxvf c-ares-1.9.1.tar.gz
+3. $ cd c-ares-1.9.1/
+4. $ CFLAGS=-m64 CPPFLAGS=-m64 ./configure --disable-shared
+5. Copy library files to build system:
+    $ cp -r ~/ws/opensource_tools/c-ares-1.9.1/*.h ~/ws/personal/linst/Tools/ThirdParty/cares/libcares/Implementation/Linux_x64/c-ares/
+    $ cp -r ~/ws/opensource_tools/c-ares-1.9.1/*.c ~/ws/personal/linst/Tools/ThirdParty/cares/libcares/Implementation/Linux_x64/c-ares/
+    $ cp -r ~/ws/opensource_tools/c-ares-1.9.1/*.pdf ~/ws/personal/linst/Tools/ThirdParty/cares/libcares/Implementation/Linux_x64/c-ares/
+
+6. Update CMakeLists.txt:
+    a. Add HAVE_CONFIG_H definition: 
+    add_definitions(-DHAVE_CONFIG_H)
+    
+    b. Tell CMake to build as -m64 -fPIC:
+    # Build x64 binary 
+    set(CMAKE_CXX_FLAGS "-Wall -Werror -m64 -fPIC") 
+    set(CMAKE_C_FLAGS "-Wall -Werror -m64 -fPIC") 
+    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/lib/x86_64-linux-gnu) # This is important to tell CMAKE to find those 64-bits libraries.
+
+7. Build and have fun.
+
+Trouble shooting:
+1. In step 4, if you specify "$ CPPFLAGS=-m32 ./configure --disable-shared", it means you want to configure libcares to be run on a 32-bits machine, 
+   If use Ubuntu 64bit OS to configure libcares as m32, while build this c-ares, below errer occurs, 
+   can be esolved by: Re-config libcares as CPPFLAGS=-m64 "$ CPPFLAGS=-m64 ./configure --disable-shared" :
+   
+  ---------------------------------------------------------------------
+  In file included from /home/huk/ws/personal/linst/Tools/ThirdParty/cares/libcares/Implementation/Linux_x86/c-ares/ares_setup.h:89:0,
+                   from /home/huk/ws/personal/linst/Tools/ThirdParty/cares/libcares/Implementation/Linux_x86/c-ares/acountry.c:35:
+  /home/huk/ws/personal/linst/Tools/ThirdParty/cares/libcares/Implementation/Linux_x86/c-ares/ares_rules.h:100:3: error: size of array ‘__cares_rule_01__’ is negative
+  make[2]: *** [Tools/ThirdParty/cares/libcares/CMakeFiles/cares.dir/Implementation/Linux_x86/c-ares/acountry.c.o] Error 1
+  ---------------------------------------------------------------------
+  
+  Because: Below macro failed:
+  ares_rules.h 
+  ---------------------------------------------------------------------
+  /*
+   * Verify that the size previously defined and expected for long
+   * is the same as the one reported by sizeof() at compile time.
+   */
+
+  typedef char
+    __cares_rule_01__
+      [CareschkszEQ(long, CARES_SIZEOF_LONG)];        <==== long in 64bit OS should be 8 bytes!!!!
+  ---------------------------------------------------------------------
+  
+  ares_build.h
+  ---------------------------------------------------------------------
+  /* The size of `long', as computed by sizeof. */
+  #define CARES_SIZEOF_LONG 4                         <==== long in 64bit OS should be 8 bytes!!!!
+  ---------------------------------------------------------------------
+  
+  In 64 bits OS, long type should be 8 bytes! But CARES_SIZEOF_LONG was defined as 4 bytes while configure libcares!!!!!!!!
+  
+  Resolved by: Re-config libcares by "$ ./configure --disable-shared"
+  
+  Reference:
+  http://comments.gmane.org/gmane.network.dns.c-ares/408
+  

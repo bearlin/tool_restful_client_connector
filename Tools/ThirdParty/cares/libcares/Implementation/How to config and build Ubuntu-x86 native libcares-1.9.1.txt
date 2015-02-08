@@ -1,0 +1,22 @@
+[How to config and build Ubuntu-x86 native libcares-1.9.1]
+
+1. download c-ares-1.9.1.tar.gz from http://c-ares.haxx.se/download/.
+2. $ tar -zxvf c-ares-1.9.1.tar.gz
+3. $ cd c-ares-1.9.1/
+4. $ CFLAGS=-m32 CPPFLAGS=-m32 ./configure --disable-shared
+5. Copy library files to build system:
+    $ cp -r ~/ws/opensource_tools/c-ares-1.9.1/*.h ~/ws/personal/linst/Tools/ThirdParty/cares/libcares/Implementation/Linux_x86/c-ares/
+    $ cp -r ~/ws/opensource_tools/c-ares-1.9.1/*.c ~/ws/personal/linst/Tools/ThirdParty/cares/libcares/Implementation/Linux_x86/c-ares/
+    $ cp -r ~/ws/opensource_tools/c-ares-1.9.1/*.pdf ~/ws/personal/linst/Tools/ThirdParty/cares/libcares/Implementation/Linux_x86/c-ares/
+
+6. Update CMakeLists.txt:
+    a. Add HAVE_CONFIG_H definition: 
+    add_definitions(-DHAVE_CONFIG_H)
+    
+    b. Tell CMake to build as -m32 -fPIC:
+    # Build x86 binary 
+    set(CMAKE_CXX_FLAGS "-Wall -Werror -m32 -fPIC") 
+    set(CMAKE_C_FLAGS "-Wall -Werror -m32 -fPIC") 
+    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/lib/i386-linux-gnu) # This is important to tell CMAKE to find those 64-bits libraries.
+
+7. Build and have fun.

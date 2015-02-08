@@ -1,0 +1,69 @@
+[How to build libcurl-7.22.0]
+
+1. download curl-7.22.0.tar.bz2 from http://curl.haxx.se/download.html.
+2. $ tar -jxvf curl-7.22.0.tar.bz2
+3. $ cd curl-7.22.0/
+4. $ CFLAGS=-m32 CPPFLAGS=-m32 ./configure --without-libidn
+   ------------------------------------------------------------------------------------
+    configure: Configured to build curl/libcurl:
+
+    curl version:    7.22.0
+    Host setup:      x86_64-unknown-linux-gnu
+    Install prefix:  /usr/local
+    Compiler:        gcc
+    SSL support:     enabled (OpenSSL)
+    SSH support:     no      (--with-libssh2)
+    zlib support:    enabled
+    krb4 support:    no      (--with-krb4*)
+    GSSAPI support:  no      (--with-gssapi)
+    SPNEGO support:  no      (--with-spnego)
+    TLS-SRP support: enabled
+    resolver:        default (--enable-ares / --enable-threaded-resolver)
+    ipv6 support:    enabled
+    IDN support:     no      (--with-libidn)
+    Build libcurl:   Shared=yes, Static=yes
+    Built-in manual: enabled
+    Verbose errors:  enabled (--disable-verbose)
+    SSPI support:    no      (--enable-sspi)
+    ca cert bundle:  /etc/ssl/certs/ca-certificates.crt
+    ca cert path:    no
+    LDAP support:    no      (--enable-ldap / --with-ldap-lib / --with-lber-lib)
+    LDAPS support:   no      (--enable-ldaps)
+    RTSP support:    enabled
+    RTMP support:    no      (--with-librtmp)
+    Protocols:       DICT FILE FTP FTPS GOPHER HTTP HTTPS IMAP IMAPS POP3 POP3S RTSP SMTP SMTPS TELNET TFTP
+   ------------------------------------------------------------------------------------
+   
+5. Copy library files to build system:
+    $ cp ~/ws/opensource_tools/curl-7.22.0/include/curl/*.h ~/ws/personal/linst/Tools/ThirdParty/curl/libcurl/Implementation/Linux_x86/curl/
+    $ cp ~/ws/opensource_tools/curl-7.22.0/lib/*.h ~/ws/personal/linst/Tools/ThirdParty/curl/libcurl/Implementation/Linux_x86/curl/
+    $ cp ~/ws/opensource_tools/curl-7.22.0/lib/*.c ~/ws/personal/linst/Tools/ThirdParty/curl/libcurl/Implementation/Linux_x86/curl/
+
+6. Update CMakeLists.txt:
+    a. Add HAVE_CONFIG_H definition: 
+    add_definitions(-DHAVE_CONFIG_H)
+    
+    b. Set and inclcude the headers paths:
+    set(ImplementationDir "Implementation/Linux_x86")
+
+    # Definition of the cURL API INCLUDES
+    set(ThirdParty_curl_libcurl_API_INCLUDES
+      ${ThirdParty_curl_libcurl_ROOT}/${ImplementationDir}
+      ${ThirdParty_curl_libcurl_ROOT}/${ImplementationDir}/curl/
+      CACHE STRING "curl API INCLUDES path")
+
+    #Include path
+    include_directories( 
+        ${ThirdParty_curl_libcurl_API_INCLUDES} 
+        ${ThirdParty_cares_libcares_API_INCLUDES}
+    )
+    
+    add_definitions(-DHAVE_CONFIG_H)
+    
+    c. Tell CMake to build as -m32 -fPIC:
+    # Build x86 binary 
+    set(CMAKE_CXX_FLAGS "-Wall -Werror -m32 -fPIC") 
+    set(CMAKE_C_FLAGS "-Wall -Werror -m32 -fPIC") 
+    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/lib/i386-linux-gnu) # This is important to tell CMAKE to find those 64-bits libraries.
+
+7. Build and have fun.
