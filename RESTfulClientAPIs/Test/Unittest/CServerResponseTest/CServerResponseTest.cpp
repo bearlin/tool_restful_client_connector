@@ -27,8 +27,8 @@ TEST_F(CServerResponseTest, createCServerResponse)
   std::string aHeaders = "test_header_text";
   const char* aBody = "test_body_text";
   
-  printf("aBody addr:0x%x, size:%d\n", (int)aBody, strlen(aBody));
-  CServerResponse* serverResponse = new CServerResponse(aResponseCode, aHeaders, aBody, strlen(aBody));
+  printf("aBody addr:0x%x, size:%ld\n", (unsigned int)aBody, (size_t)strlen(aBody));
+  CServerResponse* serverResponse = new CServerResponse(aResponseCode, aHeaders, aBody, (size_t)strlen(aBody));
   EXPECT_TRUE(NULL != serverResponse);
   EXPECT_TRUE(aResponseCode == serverResponse->getResponseCode());
   EXPECT_TRUE(0 == aHeaders.compare(serverResponse->getHeader()));
@@ -36,7 +36,7 @@ TEST_F(CServerResponseTest, createCServerResponse)
   char* getBodyBuffer; 
   size_t getBodySize;
   serverResponse->getBody(&getBodyBuffer, &getBodySize);
-  printf("getBodyBuffer addr:0x%x, getBodySize:%d\n", (int)getBodyBuffer, getBodySize);
+  printf("getBodyBuffer addr:0x%x, getBodySize:%d\n", (unsigned int)getBodyBuffer, (unsigned int)getBodySize);
   EXPECT_TRUE(getBodySize == strlen(aBody));
   EXPECT_TRUE(0 == memcmp(aBody, getBodyBuffer, getBodySize));
 

@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include <iostream>
 
-const long KDEFAULT_TIMEOUT_NEVER = 0; //CURL: Default timeout is 0 (zero) which means it never times out.
+//const long KDEFAULT_TIMEOUT_NEVER = 0; //CURL: Default timeout is 0 (zero) which means it never times out.
 const long KDEFAULT_CONNECT_TIMEOUT_MILLIS = 15*1000L;
 const long KDEFAULT_READ_TIMEOUT_MILLIS = 30*1000L;
 
