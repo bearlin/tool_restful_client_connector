@@ -3,13 +3,13 @@ A small RESTful C++ client tool with very limit RESTful Client APIs functions.
 The develop environment is Ubuntu 14.04 64bit.
 
 #Environment setup
-Install cmake, OpenSSL
-sudo apt-get install libssl-dev cmake 
+Install cmake, OpenSSL:  
+sudo apt-get install libssl-dev cmake  
 
 #Build
 ```sh
-./build.sh         (normal build)
-./build.sh clean   (clean build)
+./build.sh x64     (normal build for x64 system)
+./build.sh x86     (normal build for x86 system)
 ```
 
 #Run the demo
