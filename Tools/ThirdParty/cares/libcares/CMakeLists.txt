@@ -4,8 +4,11 @@ project(cares)
 set(ThirdParty_cares_libcurl_ROOT ${PROJECT_SOURCE_DIR} CACHE STRING "ThirdParty_cares_libcurl_ROOT directory")
 
 # Select x86 or x64 cares.
-set(ImplementationDir "Implementation/Linux_x86") # already configured as x86.
-#set(ImplementationDir "Implementation/Linux_x64") # already configured as x64.
+if (${ArchType} STREQUAL "x86")
+  set(ImplementationDir "Implementation/Linux_x86") # already configured as x86.
+else()
+  set(ImplementationDir "Implementation/Linux_x64") # already configured as x64.
+endif()
 
 # Definition of the C-Ares API INCLUDES
 set(ThirdParty_cares_libcares_API_INCLUDES

@@ -4,8 +4,11 @@ project(curl)
 set(ThirdParty_curl_libcurl_ROOT ${PROJECT_SOURCE_DIR} CACHE STRING "ThirdParty_curl_libcurl_ROOT directory")
 
 # Select x86 or x64 curl.
-set(ImplementationDir "Implementation/Linux_x86") # already configured as x86.
-#set(ImplementationDir "Implementation/Linux_x64") # already configured as x64.
+if (${ArchType} STREQUAL "x86")
+  set(ImplementationDir "Implementation/Linux_x86") # already configured as x86.
+else()
+  set(ImplementationDir "Implementation/Linux_x64") # already configured as x64.
+endif()
 
 # Definition of the cURL API INCLUDES
 set(ThirdParty_curl_libcurl_API_INCLUDES

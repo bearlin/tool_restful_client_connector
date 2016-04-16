@@ -3,19 +3,24 @@ cmake_minimum_required(VERSION 2.8)
 project(RESTfulClientConnector)
   message(STATUS "*** PROJECT_NAME = ${PROJECT_NAME}")
 
+message(STATUS "*** ArchType= ${ArchType}")
+
+# Select to build x86 or x64
 # -------------------------------------------------------------------
 ## -fPIC: http://stackoverflow.com/questions/5311515/gcc-fpic-option
 ## -m32: http://stackoverflow.com/questions/2426478/when-should-m32-option-of-gcc-be-used
 
-# Build x86 binary 
-set(CMAKE_CXX_FLAGS "-Wall -Werror -m32 -fPIC") 
-set(CMAKE_C_FLAGS "-Wall -Werror -m32 -fPIC") 
-set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/lib/i386-linux-gnu) # This is important to tell CMAKE to find those 64-bits libraries.
-
-# Build x64 binary 
-#set(CMAKE_CXX_FLAGS "-Wall -Werror -m64 -fPIC") 
-#set(CMAKE_C_FLAGS "-Wall -Werror -m64 -fPIC") 
-#set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/lib/x86_64-linux-gnu) # This is important to tell CMAKE to find those 64-bits libraries.
+if (${ArchType} STREQUAL "x86")
+  # Build x86 binary 
+  set(CMAKE_CXX_FLAGS "-Wall -Werror -m32 -fPIC") 
+  set(CMAKE_C_FLAGS "-Wall -Werror -m32 -fPIC") 
+  set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/lib/i386-linux-gnu) # This is important to tell CMAKE to find those 64-bits libraries.
+else()
+  # Build x64 binary 
+  set(CMAKE_CXX_FLAGS "-Wall -Werror -m64 -fPIC") 
+  set(CMAKE_C_FLAGS "-Wall -Werror -m64 -fPIC") 
+  set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/lib/x86_64-linux-gnu) # This is important to tell CMAKE to find those 64-bits libraries.
+endif()
 # -------------------------------------------------------------------
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
