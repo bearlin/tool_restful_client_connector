@@ -1,3 +1,5 @@
+![Image of Travis CI](https://travis-ci.org/bearlin/tool_restful_client_connector.svg?branch=master)
+
 # tool_restful_client_connector
 A small RESTful C++ client tool with very limit RESTful Client APIs functions. 
 The develop environment is Ubuntu 14.04 64bit.
