@@ -4,6 +4,7 @@ The develop environment is Ubuntu 14.04 64bit.
 
 #Environment setup
 Install cmake, OpenSSL
+sudo apt-get install libssl-dev cmake 
 
 #Build
 ```sh
